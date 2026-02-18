@@ -50,6 +50,11 @@ def rss_parser(
     """
     # Your code goes here
     def unescape(text):
+        """
+        Replace RSS special character's aliasses by actual characters
+        
+        :param text: RSS text
+        """
         if not text:
             return text
         return (text
@@ -67,6 +72,12 @@ def rss_parser(
             self.Channel = self._parse_channel()
 
         def _extract_all_tags(self, text: str, tag: str) -> List[str]:
+            """Extract all content of all examples of a given tag from rss, returns a list of contents
+
+                param text: rss content
+                param tag: tag to seatch 
+            
+            """
             result = []
             start_tag = f"<{tag}>"
             end_tag = f"</{tag}>"
@@ -103,6 +114,19 @@ def rss_parser(
                 return None
 
         def _parse_channel(self):
+            """
+            Return dictionary containing:
+            title of channel;
+            link;
+            last modifying date;
+            publication date;
+            language;
+            editor;
+            list of categories;
+            items;
+
+            from rss file
+            """
             channel_content = self._extract_tag(self.xml, "channel")
             if not channel_content:
                 return {}
