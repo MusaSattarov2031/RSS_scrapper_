@@ -1,3 +1,4 @@
+import re
 from argparse import ArgumentParser
 from typing import List, Optional, Sequence
 import requests
@@ -161,6 +162,12 @@ def rss_parser(
                     data["items"].append(item_data)
 
             return data
+        
+    def clean_html(text):
+        if not text:
+            return ""
+        clean = re.sub(r"<[^>]+>", "", text)
+        return (" ".join(clean.split())).replace("&nbsp;", "\n")
 
     parser = ThisXML(xml)
     channel_data = parser.Channel
@@ -212,7 +219,7 @@ def rss_parser(
         desc = item.get("description")
         if desc:
             output_lines.append("")
-            output_lines.append(desc)
+            output_lines.append(clean_html(desc))
 
         output_lines.append("")
         output_lines.append("")
