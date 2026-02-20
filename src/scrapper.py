@@ -7,11 +7,12 @@ def clean_html(content: str)->str:
         return ""
     content = re.sub(r"<[^>]+>", "", content)
     content = " ".join(content.split())
-    content = content.replace("&nbsp;", '\n').replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").replace("&quot;", "\"")
+    content = content.replace("&nbsp;", ' ').replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").replace("&quot;", "\"")
+    return content
+
 def parse_xml(xml: str)->dict:
     """
     Docstring for parse_xml
-    
     :param xml: Description
     :type xml: str
     :return: Description
@@ -49,10 +50,3 @@ def print_output(data: dict, limit = None):
             
     except:
         print("Not valid data")
-    
-
-
-if __name__ =="__main__":
-    content = requests.get("https://news.google.com/rss").text
-    data = parse_xml(content)
-    print_output(data, 5)
