@@ -7,8 +7,7 @@ def clean_html(content: str)->str:
         return ""
     content = re.sub(r"<[^>]+>", "", content)
     content = " ".join(content.split())
-    return content.replace("&nbsp;", '\n')
-
+    content = content.replace("&nbsp;", '\n').replace("&lt;", "<").replace("&gt;", ">").replace("&amp;", "&").replace("&quot;", "\"")
 def parse_xml(xml: str)->dict:
     """
     Docstring for parse_xml
