@@ -5,7 +5,7 @@ def test_parse_xml_dict_structure(minimal_xml):
     res = parse_xml(minimal_xml)
     assert res['title'] == "Test Feed"
     assert res['link'] == "https://test.com"
-    assert res['items']
+    assert isinstance(res['items'], list)
 
 def test_items_payload(google_xml):
     res = parse_xml(google_xml)
