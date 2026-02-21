@@ -10,11 +10,10 @@ def transform_to_dataframe(parsed_data):
     try:
         df = pd.DataFrame(parsed_data["items"])
         source = parsed_data["title"]
-        arr = [ f"{source}"for i in range(df.shape[0])]
-        df["source"] = pd.Series()
+        arr = [f"{source}" for i in range(df.shape[0])]
+        df["source"] = pd.Series(arr)
         df["pubDate"] = pd.to_datetime(df["pubDate"])
         df.drop_duplicates(subset=["link"], inplace=True)
-        print(df)
         return df
     except KeyError:
         print("Wrong input format")
