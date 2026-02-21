@@ -1,6 +1,5 @@
 import xml.etree.ElementTree as ET
 import re
-import requests
 
 def clean_html(content: str)->str:
     if not content:
@@ -18,6 +17,7 @@ def parse_xml(xml: str)->dict:
     :return: Description
     :rtype: dict
     """
+    xml = clean_html(xml)
     root = ET.fromstring(xml)
     channel = root.find('channel')
 
