@@ -7,6 +7,10 @@ def test_transform(mock_parsed_data):
 
     assert isinstance(df, pd.DataFrame)
 
-    assert df.size == 8
+    assert df.size == 10
 
     assert df["title"].to_list() == ["First Article", "Second Article"]
+
+    expected_columns = ["title", "link", "description", "pubDate", "source"]
+    for col in expected_columns:
+        assert col in df.columns
