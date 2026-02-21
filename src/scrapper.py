@@ -17,7 +17,6 @@ def parse_xml(xml: str)->dict:
     :return: Description
     :rtype: dict
     """
-    xml = clean_html(xml)
     root = ET.fromstring(xml)
     channel = root.find('channel')
 

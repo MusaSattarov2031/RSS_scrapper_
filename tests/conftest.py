@@ -14,11 +14,6 @@ def empty_xml():
 def error_xml():
     with open("data_samples/invalid/error_page.xml", "r") as f:
         return f.read()
-
-@pytest.fixture  
-def minimal_xml():
-    with open("data_samples/minimal.xml", "r") as f:
-        return f.read()
     
 @pytest.fixture
 def nasa_xml():

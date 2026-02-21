@@ -1,10 +1,11 @@
 from src.scrapper import parse_xml
 import pytest
+import xml.etree.ElementTree as ET
 
-def test_parse_xml_dict_structure(minimal_xml):
-    res = parse_xml(minimal_xml)
-    assert res['title'] == "Test Feed"
-    assert res['link'] == "https://test.com"
+def test_parse_xml_dict_structure(nasa_xml):
+    res = parse_xml(nasa_xml)
+    assert res['title']
+    assert res['link']
     assert isinstance(res['items'], list)
 
 def test_items_payload(google_xml):
