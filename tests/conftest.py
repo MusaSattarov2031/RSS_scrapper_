@@ -24,3 +24,4 @@ def nasa_xml():
 def verge_xml():
     with open("data_samples/the_verge.xml", "r") as f:
         return f.read()
+
