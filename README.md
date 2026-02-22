@@ -6,17 +6,17 @@ A robust Data Engineering project that automates the Extraction, Transformation,
 This pipeline is designed to handle the "messy" reality of web data. It pulls live feeds from sources like Google News and NASA, cleanses nested HTML artifacts, standardizes data formats using Pandas, and ensures data integrity before loading into a relational database.
 Core Features:
 
-    Extraction: Multi-source RSS ingestion with custom Header Spoofing to bypass bot-detection.
+Extraction: Multi-source RSS ingestion with custom Header Spoofing to bypass bot-detection.
 
-    Transformation: * Regex-based HTML stripping and entity decoding.
+Transformation: * Regex-based HTML stripping and entity decoding.
 
-        Pandas-driven deduplication based on unique article URLs.
+   Pandas-driven deduplication based on unique article URLs.
 
-        Standardization of heterogeneous pubDate strings into ISO-8601 datetimes.
+   Standardization of heterogeneous pubDate strings into ISO-8601 datetimes.
 
-    Loading: Automated schema management and data insertion via SQLAlchemy.
+Loading: Automated schema management and data insertion via SQLAlchemy.
 
-    Quality Assurance: 100% test coverage for the parsing and cleansing logic using pytest.
+Quality Assurance: 100% test coverage for the parsing and cleansing logic using pytest.
 
 ## 🛠️ Installation & Setup
 1. Clone the Repository
