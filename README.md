@@ -39,21 +39,6 @@ Instead of installing packages individually, use the existing requirements.txt f
 pip install --upgrade pip
 pip install -r requirements.txt
 ```
-## 📂 Project Structure
-Plaintext
-
-RSS_scrapper/
-├── src/
-│   ├── scrapper.py       # Extraction & Parsing logic
-│   ├── transformer.py    # Pandas Transformation & Cleaning
-│   └── loader.py         # Database ingestion (PostgreSQL)
-├── tests/
-│   ├── conftest.py       # Pytest fixtures and shared setup
-│   ├── test_parser.py    # Unit tests for XML parsing
-│   └── test_cleanser.py  # Unit tests for HTML cleansing
-├── data_samples/         # Mock XML files for air-gapped testing
-├── requirements.txt      # Project dependencies
-└── pytest.ini            # Test configuration
 
 🧪 Running Tests
 
