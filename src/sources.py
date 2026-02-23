@@ -26,3 +26,30 @@ def insert_source(source, link):
         engine.dispose()
         print("Returning id")
         return source_id
+    
+def remove_source(id = None, source = None, link = None, all = False):
+    load_dotenv()
+    db_url = getenv("DATABASE_URL")
+    engine = create_engine(db_url)
+    conn = engine.connect()
+    if all:
+        conn.execute(text("DELETE FROM sources"))
+    elif not (id or source or link):
+        print("Provide condition")
+    elif id:
+        conn.execute(text("DELETE FROM sources WHERE id = :id"), {"id": id})
+    elif source:
+        conn.execute(text("DELETE FROM sources WHERE source = :source"), {"source": source})
+    elif link:
+        conn.execute(text("DELETE FROM sources WHERE link = :link"), {"link": link})
+
+    conn.commit()
+    engine.dispose()
+    return
+
+
+def get_sources(engine: engine):
+    conn = engine.connect()
+    result = conn.execute(text("SELECT * FROM sources")).fetchall()
+    conn.close
+    return result

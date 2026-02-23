@@ -2,3 +2,4 @@ pandas
 pytest
 sqlalchemy
 python-dotenv
+requests

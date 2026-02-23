@@ -1,22 +1,24 @@
 import pandas as pd
-from src.update_sources import insert_source
+from src.sources import insert_source
 
-def transform_to_dataframe(parsed_data):
+def transform_to_dataframe(parsed_data, id = None):
     """Transfrom items of new's data to dataframe with columns:
         title,
         link(unique for each row),
         pubDate in pd.datetime format,
-        decription,
+        description,
         source_id
     """
     try:
         #Get source_id from db
-        source = parsed_data["title"]
-        source_id = insert_source(source, parsed_data["link"])
+        if not id:
+            source = parsed_data["title"]
+            source_id = insert_source(source, parsed_data["link"])
+        else:
+            source_id = id
         # Dataframe creation
         df = pd.DataFrame(parsed_data["items"])
-        arr = [source_id for i in range(df.shape[0])]
-        df["source_id"] = pd.Series(arr)
+        df["source_id"] = source_id
         df["pubDate"] = pd.to_datetime(df["pubDate"])
         df.drop_duplicates(subset=["link"], inplace=True)
         return df
