@@ -14,7 +14,7 @@ def test_columns(db_table_data):
         assert columns[1] == "link"
         assert columns[2] == "description"
         assert columns[3] == "pubDate"
-        assert columns[4] == "source"
+        assert columns[4] == "source_id"
 
 def test_rows_data(db_table_data):
     rows = db_table_data["rows"]
@@ -24,18 +24,18 @@ def test_rows_data(db_table_data):
             print("More than two rows")
             raise AssertionError
     except ValueError:
-        print("Only one row")
+        print("Less than two")
     else:
         #First row tests
         assert first_row.title == "First Article"
         assert first_row.link == "https://eng-daily.test/article-1"
         assert first_row.description == "Clean description."
         assert first_row.pubDate == "2026-02-18 12:00:00.000000"
-        assert first_row.source == "Engineering Daily"
+        assert first_row.source_id == 1
 
         #second row tests
         assert second_row.title == "Second Article"
         assert second_row.link == "https://eng-daily.test/article-2"
         assert second_row.description == "Another description."
         assert second_row.pubDate == "2026-02-19 09:30:00.000000"
-        assert second_row.source == "Engineering Daily"
+        assert second_row.source_id == 1

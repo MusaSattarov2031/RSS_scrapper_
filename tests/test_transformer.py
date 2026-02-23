@@ -11,6 +11,6 @@ def test_transform(mock_parsed_data):
 
     assert df["title"].to_list() == ["First Article", "Second Article"]
 
-    expected_columns = ["title", "link", "description", "pubDate", "source"]
+    expected_columns = ["title", "link", "description", "pubDate", "source_id"]
     for col in expected_columns:
         assert col in df.columns
