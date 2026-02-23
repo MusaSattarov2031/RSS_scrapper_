@@ -1,5 +1,6 @@
-venv/
+*venv/
 *cache*
 *.db
 .env
 /data
+*vscode*
