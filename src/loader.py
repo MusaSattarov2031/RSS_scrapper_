@@ -16,5 +16,5 @@ def execute_query(query: str, engine: sa.engine):
     conn = engine.connect()
 
     result = conn.execute(sa.text(query)).fetchall()
-    conn.commit
+    conn.commit()
     return result
