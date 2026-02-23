@@ -26,23 +26,16 @@ def test_rows_data(db_table_data):
     except ValueError:
         print("Only one row")
     else:
-        
-        try:
-            assert isinstance(first_row.pubDate, datetime)
-            assert isinstance(second_row.pubDate, datetime)
-        except AssertionError:
-            print(f"Wrong format of pubDate")
-        else:
-            print(f"Format: {first_row.pubDate}, {second_row.pubDate}")
-
         #First row tests
         assert first_row.title == "First Article"
         assert first_row.link == "https://eng-daily.test/article-1"
         assert first_row.description == "Clean description."
+        assert first_row.pubDate == "2026-02-18 12:00:00.000000"
         assert first_row.source == "Engineering Daily"
 
         #second row tests
         assert second_row.title == "Second Article"
         assert second_row.link == "https://eng-daily.test/article-2"
         assert second_row.description == "Another description."
+        assert second_row.pubDate == "2026-02-19 09:30:00.000000"
         assert second_row.source == "Engineering Daily"
