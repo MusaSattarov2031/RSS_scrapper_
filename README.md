@@ -21,7 +21,7 @@ Quality Assurance: 100% test coverage for the parsing and cleansing logic using 
 ## 🛠️ Installation & Setup
 1. Clone the Repository
 ```bash
-git clone https://github.com/yourusername/RSS_scrapper.git
+git clone https://github.com/MusaSattarov2031/RSS_scrapper.git
 cd RSS_scrapper
 ```
 
