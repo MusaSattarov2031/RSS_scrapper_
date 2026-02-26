@@ -5,6 +5,7 @@ from dotenv import load_dotenv
 from os import getenv
 from src.loader import load_to_sqlite, execute_query
 from src.transformer import transform_to_dataframe
+from src.users import UserAuth
 
 @pytest.fixture
 def google_xml():
@@ -113,3 +114,21 @@ def db_table_data():
     
     engine.dispose()
     print("Session cleanup complete")
+
+@pytest.fixture(scope="session")
+def userauth():
+    load_dotenv()
+    db_url = getenv("DATABASE_URL")
+
+    engine = create_engine(db_url)
+    with engine.connect() as conn:
+        auth = UserAuth(conn)
+        yield auth
+        print("Clearing Users Table...")
+        conn.execute(text("PRAGMA foreign_keys = OFF"))
+        conn.execute(text("DELETE FROM users"))
+        conn.execute(text("DELETE FROM sqlite_sequence WHERE name = 'users'"))
+        conn.execute(text("PRAGMA foreign_keys = ON"))
+        conn.commit()
+    engine.dispose()
+    print("Users table cleared")
