@@ -51,5 +51,5 @@ def remove_source(id = None, source = None, link = None, all = False):
 def get_sources(engine: engine):
     conn = engine.connect()
     result = conn.execute(text("SELECT * FROM sources")).fetchall()
-    conn.close
+    conn.close()
     return result
