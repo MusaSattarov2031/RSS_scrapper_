@@ -121,14 +121,25 @@ def userauth():
     db_url = getenv("DATABASE_URL")
 
     engine = create_engine(db_url)
-    with engine.connect() as conn:
-        auth = UserAuth(conn)
-        yield auth
-        print("Clearing Users Table...")
-        conn.execute(text("PRAGMA foreign_keys = OFF"))
-        conn.execute(text("DELETE FROM users"))
-        conn.execute(text("DELETE FROM sqlite_sequence WHERE name = 'users'"))
-        conn.execute(text("PRAGMA foreign_keys = ON"))
-        conn.commit()
+    conn = engine.connect()
+    auth = UserAuth(conn)
+    auth.create_user("Alex", "password1", "exampleemail@test.com")
+    yield auth
+    print("Clearing Users Table...")
+    conn.execute(text("PRAGMA foreign_keys = OFF"))
+    conn.execute(text("DELETE FROM users"))
+    conn.execute(text("DELETE FROM sqlite_sequence WHERE name = 'users'"))
+    conn.execute(text("PRAGMA foreign_keys = ON"))
+    conn.commit()
     engine.dispose()
     print("Users table cleared")
+
+@pytest.fixture(scope="session")
+def connection():
+    load_dotenv()
+    db_url = getenv("DATABASE_URL")
+    engine = create_engine(db_url)
+    with engine.connect() as conn:
+        yield conn
+        print("Closing Connection...")
+    print("Connection closed")
