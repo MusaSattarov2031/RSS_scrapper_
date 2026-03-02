@@ -2,7 +2,6 @@ from src.users import UserAuth
 import pytest
 from sqlalchemy import text
 import bcrypt
-import re
 
 def test_create_user(userauth, connection):
     userauth.create_user("Alex2", "password1", "exampleemail2@test.com")
@@ -76,8 +75,8 @@ def test_create_user_empty_fields(userauth):
     ("Pass1", False, "Password too short"),
     ("Ab1", False, "Password too short"),
 ])
-def test_is_valid_password_complexity(userauth, password, expected_valid, expected_message):
-    is_valid, message = userauth.is_valid_password(password)
+def test_is_valid_password_complexity(password, expected_valid, expected_message):
+    is_valid, message = UserAuth.is_valid_password(password)
     assert is_valid == expected_valid
     assert message == expected_message
 
@@ -174,3 +173,24 @@ def test_delete_user(userauth, connection):
     ).fetchone()
 
     assert row is None
+@pytest.mark.parametrize("email, expected", [
+    # Valid emails
+    ("user@example.com", True),
+    ("first.last@example.com", True),
+    ("user+tag@example.com", True),
+    ("user123@test.co.uk", True),
+    ("email@domain.com", True),
+    ("email@subdomain.domain.com", True),
+    
+    # Invalid emails
+    ("plainaddress", False),
+    ("@missingusername.com", False),
+    ("username@.com", False),
+    ("username@domain", False),
+    ("username@domain.", False),
+    ("username@domain.c", False),  # TLD too short
+    ("user name@domain.com", False),  # Space
+    ("user@domain,com", False) # Comma
+])
+def test_is_valid_email(email, expected):
+    assert UserAuth.is_valid_email(email) == expected
