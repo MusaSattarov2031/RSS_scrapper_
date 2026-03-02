@@ -122,9 +122,9 @@ def userauth():
 
     engine = create_engine(db_url)
     conn = engine.connect()
-    auth = UserAuth(conn)
-    auth.create_user("Alex", "password1", "exampleemail@test.com")
-    yield auth
+    with UserAuth() as auth:
+        auth.create_user("Alex", "password1", "exampleemail@test.com")
+        yield auth
     print("Clearing Users Table...")
     conn.execute(text("PRAGMA foreign_keys = OFF"))
     conn.execute(text("DELETE FROM users"))
