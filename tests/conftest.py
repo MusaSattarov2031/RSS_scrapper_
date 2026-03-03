@@ -119,9 +119,6 @@ def db_table_data():
 def userauth():
     auth = UserAuth()
     user_id = auth.create_user("Alex", "password1", "exampleemail@test.com")
-    print(f"DEBUG - Created user with ID: {user_id}")
-    check_id = auth.get_id_by_username("Alex")
-    print(f"DEBUG - Verified, get_id_by_username returns: {check_id}")
     yield auth
     print("Closing auth connection...")
     auth.close()

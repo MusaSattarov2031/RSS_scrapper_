@@ -21,6 +21,12 @@ class UserAuth:
 
         print("Auth connection is closed")
 
+    def _hash(self, password):
+        salt = bcrypt.gensalt()
+        hashed  = bcrypt.hashpw(password.encode('utf-8'), salt)
+
+        return hashed
+
     def create_user(self, username, password, email):
         """
         Add user to database, returns id if succesfull
@@ -50,8 +56,7 @@ class UserAuth:
             raise ValueError(f"Email {email} already registered. Do you want to log in?")
         
         # Hashing password
-        salt = bcrypt.gensalt()
-        hashed  = bcrypt.hashpw(password.encode('utf-8'), salt)
+        hashed = self._hash(password)
 
         # Creating a user
         result = self.conn.execute(
@@ -157,16 +162,13 @@ class UserAuth:
 
     def get_id_by_username(self, username):
         row = self.conn.execute(
-            text(
-                "SELECT id FROM users WHERE username = :username"
-            ),
-            {
-                "username": username
-            }
+            text("SELECT id FROM users WHERE username = :username"),
+            {"username": username}
         ).fetchone()
+    
         if row is None:
             raise ValueError("Username not found")
-        return row.id
+        return row[0]
 
     def update_email(self, user_id, new_email):
         result = self.conn.execute(
@@ -187,4 +189,16 @@ class UserAuth:
         self.conn.commit()
 
     def update_password(self, user_id, old_password, new_password):
-        pass
+        username = self.get_user_by_id(user_id)["username"]
+        if not self.authenticate(username, old_password):
+            print("Permission denied")
+            return False
+        
+        new_hashed = self._hash(new_password)
+
+        self.conn.execute(
+            text("UPDATE users SET password_hash = :new_hashed WHERE id = :user_id"),
+            {"new_hashed": new_hashed, "user_id": user_id}
+        )
+        self.conn.commit()
+        return True

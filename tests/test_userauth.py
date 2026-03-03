@@ -137,6 +137,8 @@ def test_update_username(userauth):
 
     assert new_username == updated_user["username"]
 
+    userauth.update_username(id, "Alex")
+
 def test_update_password(userauth, connection):
     id = userauth.get_id_by_username("Alex")
 
