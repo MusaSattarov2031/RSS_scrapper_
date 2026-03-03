@@ -117,14 +117,20 @@ def db_table_data():
 
 @pytest.fixture(scope="session")
 def userauth():
+    auth = UserAuth()
+    user_id = auth.create_user("Alex", "password1", "exampleemail@test.com")
+    print(f"DEBUG - Created user with ID: {user_id}")
+    check_id = auth.get_id_by_username("Alex")
+    print(f"DEBUG - Verified, get_id_by_username returns: {check_id}")
+    yield auth
+    print("Closing auth connection...")
+    auth.close()
+
     load_dotenv()
     db_url = getenv("DATABASE_URL")
 
     engine = create_engine(db_url)
     conn = engine.connect()
-    with UserAuth() as auth:
-        auth.create_user("Alex", "password1", "exampleemail@test.com")
-        yield auth
     print("Clearing Users Table...")
     conn.execute(text("PRAGMA foreign_keys = OFF"))
     conn.execute(text("DELETE FROM users"))
