@@ -158,7 +158,15 @@ class UserAuth:
         return user
 
     def delete_user(self, user_id):
-        pass
+        result = self.conn.execute(
+            text(
+                "DELETE FROM users WHERE id = :user_id"
+            ),
+            {"user_id": user_id}
+        )
+        if result.rowcount == 0:
+            raise ValueError("User not found")
+        self.conn.commit()
 
     def get_id_by_username(self, username):
         row = self.conn.execute(
