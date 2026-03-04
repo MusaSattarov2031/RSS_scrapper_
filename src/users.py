@@ -5,19 +5,20 @@ from sqlalchemy import create_engine, text
 import re
 
 class UserAuth:
-    def __init__(self):
-        load_dotenv()
-        db_url = getenv("DATABASE_URL")
-        if db_url is None:
-            raise ValueError("DATABASE_URL not set in environment")
-        self.engine = create_engine(db_url)
-        self.conn = self.engine.connect()
+    def __init__(self, connection=None):
+        if connection:
+            self.conn = connection
+        else:
+            load_dotenv()
+            db_url = getenv("DATABASE_URL")
+            if db_url is None:
+                raise ValueError("DATABASE_URL not set in environment")
+            engine = create_engine(db_url)
+            self.conn = engine.connect()
     
     def close(self):
         if hasattr(self, 'conn'):
             self.conn.close()
-        if hasattr(self, 'engine'):
-            self.engine.dispose()
 
         print("Auth connection is closed")
 
