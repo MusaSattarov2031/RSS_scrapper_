@@ -3,9 +3,9 @@ import pytest
 from sqlalchemy import text
 import bcrypt
 
-def test_create_user(userauth, connection):
+def test_create_user(userauth):
     userauth.create_user("Alex2", "password1", "exampleemail2@test.com")
-    row = connection.execute(
+    row = userauth.conn.execute(
         text(
             "SELECT * FROM users WHERE username = 'Alex2'"
             )
@@ -33,8 +33,8 @@ def test_create_user_duplicate_email(userauth):
     with pytest.raises(ValueError, match="Email exampleemail2@test.com already registered. Do you want to log in?"):
         userauth.create_user("Alex11", "password2", "exampleemail2@test.com")
 
-def test_password_is_hashed(connection):
-    row = connection.execute(
+def test_password_is_hashed(userauth):
+    row = userauth.conn.execute(
         text(
             "SELECT password_hash FROM users WHERE username = 'Alex2'"
             )
@@ -139,13 +139,13 @@ def test_update_username(userauth):
 
     userauth.update_username(id, "Alex")
 
-def test_update_password(userauth, connection):
+def test_update_password(userauth):
     id = userauth.get_id_by_username("Alex")
 
     new_password = "new_password1"
     userauth.update_password(id, "password1", new_password)
 
-    row = connection.execute(
+    row = userauth.conn.execute(
         text(
             "SELECT password_hash FROM users WHERE username = 'Alex'"
         )
@@ -165,13 +165,13 @@ def test_update_password(userauth, connection):
         stored_hash
     )
 
-def test_delete_user(userauth, connection):
+def test_delete_user(userauth):
     id = userauth.get_id_by_username("Alex")
 
     userauth.delete_user(id)
     assert id is not None
 
-    row = connection.execute(
+    row = userauth.conn.execute(
         text(
             "SELECT * FROM users WHERE username = 'Alex'"
         )
