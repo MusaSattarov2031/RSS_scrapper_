@@ -6,6 +6,7 @@ from os import getenv
 from src.loader import load_to_sqlite, execute_query
 from src.transformer import transform_to_dataframe
 from src.users import UserAuth
+from src.subscriptions import SubscriptionManager
 
 @pytest.fixture
 def google_xml():
@@ -144,10 +145,77 @@ def userauth():
     engine.dispose()
 
 @pytest.fixture(scope="session")
-def connection():
-    engine = create_engine("sqlite:///:memory:")
+def connection(db_url):
+    engine = create_engine(db_url)
     conn = engine.connect()
     with engine.connect() as conn:
         yield conn
         print("Closing Connection...")
     print("Connection closed")
+
+@pytest.fixture(scope="session")
+def manager():
+    sm = SubscriptionManager(db_url="sqlite:///:memory:")
+    sm.conn.execute(
+        text("""
+             CREATE TABLE users(
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             username TEXT,
+             password_hash TEXT,
+             email TEXT
+             )
+            """)
+    )
+
+    sm.conn.execute(
+        text("""
+             CREATE TABLE sources(
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             source TEXT,
+             link TEXT
+             )
+             """)
+    )
+
+    sm.conn.execute(
+        text("""
+             CREATE TABLE user_subscriptions(
+             id INTEGER PRIMARY KEY AUTOINCREMENT,
+             user_id INTEGER,
+             source_id INTEGER,
+             FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE,
+             FOREIGN KEY (source_id) REFERENCES sources(id) ON DELETE CASCADE,
+             UNIQUE(user_id, source_id)
+             )
+             """)
+    )
+    #Insert users
+    users = [
+        (1, "alice", "hash1", "alice@test.com"),
+        (2, "bob", "hash2", "bob@test.com"),
+        (3, "charlie", "hash3", "charlie@test.com"),
+    ]
+    
+    for user in users:
+        sm.conn.execute(
+            text("INSERT INTO users (id, username, password_hash, email) VALUES (:id, :username, :hash, :email)"),
+            {"id": user[0], "username": user[1], "hash": user[2], "email": user[3]}
+        )
+    
+    # Insert sources
+    sources = [
+        (1, "BBC News", "http://feeds.bbci.co.uk/news/rss.xml"),
+        (2, "CNN", "http://rss.cnn.com/rss/edition.rss"),
+        (3, "TechCrunch", "https://techcrunch.com/feed/"),
+        (4, "The Verge", "https://www.theverge.com/rss/index.xml"),
+        (5, "NASA", "https://www.nasa.gov/rss/dyn/breaking_news.rss"),
+    ]
+    
+    for source in sources:
+        sm.conn.execute(
+            text("INSERT INTO sources (id, source, link) VALUES (:id, :source, :link)"),
+            {"id": source[0], "source": source[1], "link": source[2]}
+        )
+
+    yield sm
+    sm.close()
