@@ -1,7 +1,7 @@
 import pandas as pd
 from src.sources import insert_source
 
-def transform_to_dataframe(parsed_data, id = None):
+def transform_to_dataframe(parsed_data, engine,id = None):
     """Transfrom items of new's data to dataframe with columns:
         title,
         link(unique for each row),
@@ -13,7 +13,7 @@ def transform_to_dataframe(parsed_data, id = None):
         #Get source_id from db
         if not id:
             source = parsed_data["title"]
-            source_id = insert_source(source, parsed_data["link"])
+            source_id = insert_source(source, parsed_data["link"], engine)
         else:
             source_id = id
         # Dataframe creation

@@ -2,10 +2,7 @@ from sqlalchemy import engine, text, create_engine
 from os import getenv
 from dotenv import load_dotenv
 
-def insert_source(source, link):
-    load_dotenv()
-    db_url = getenv("DATABASE_URL")
-    engine = create_engine(db_url)
+def insert_source(source, link, engine: engine):
     conn = engine.connect()
     try:
         source_id = conn.execute(text(f"SELECT id FROM sources WHERE source = '{source}'")).fetchone().id
@@ -23,7 +20,7 @@ def insert_source(source, link):
         print("Added to table sources")
         source_id = result.lastrowid
     finally:
-        engine.dispose()
+        conn.close()
         print("Returning id")
         return source_id
     

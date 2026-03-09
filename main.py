@@ -24,7 +24,7 @@ if __name__ == "__main__":
                 print("Parsing...")
                 dict_data = parse_xml(xml)
                 print("Parsed, DataFrame transformation...")
-                df = transform_to_dataframe(dict_data, id= row.id)
+                df = transform_to_dataframe(dict_data, id= row.id, engine=engine)
 
                 links_of_source = pd.read_sql(
                     sql="SELECT link FROM news_articles WHERE source_id = :id",

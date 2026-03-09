@@ -1,5 +1,3 @@
-from datetime import datetime
-
 def test_table_name(db_table_data):
     assert db_table_data["table_name"] == "news_articles"
 
@@ -26,6 +24,7 @@ def test_rows_data(db_table_data):
     except ValueError:
         print("Less than two")
     else:
+        print(f"Table name: {db_table_data["table_name"]}")
         #First row tests
         assert first_row.title == "First Article"
         assert first_row.link == "https://eng-daily.test/article-1"

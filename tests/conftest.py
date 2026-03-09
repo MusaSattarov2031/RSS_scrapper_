@@ -63,9 +63,16 @@ def mock_parsed_data():
 @pytest.fixture(scope="session")
 def db_table_data():
     load_dotenv()
-    db_url = getenv("DATABASE_URL")
-
-    engine = create_engine(db_url)
+    engine = create_engine("sqlite:///:memory:")
+    conn = engine.connect()
+    conn.execute(text("""
+        CREATE TABLE sources (
+            id INTEGER PRIMARY KEY AUTOINCREMENT,
+            source TEXT NOT NULL UNIQUE,
+            link TEXT NOT NULL UNIQUE,
+            created_at DATETIME DEFAULT CURRENT_TIMESTAMP
+        )
+    """))
 
     data = {
         "title": "Engineering Daily",
@@ -92,7 +99,7 @@ def db_table_data():
         ]
     }
 
-    df = transform_to_dataframe(data)
+    df = transform_to_dataframe(data, engine)
 
     load_to_sqlite(df, engine)
 
@@ -103,18 +110,6 @@ def db_table_data():
     yield {"table_name": table_name,
             "columns": [col["name"] for col in inspector.get_columns(table_name)],
             "rows": rows}
-    
-    print("\n Session Teardown: Cleaning up database after all tests")
-    with engine.connect() as conn:
-        conn.execute(text("Pragma foreign_keys = OFF"))
-        
-        conn.execute(text(f"DELETE FROM {table_name}"))
-
-        conn.execute(text("Pragma foreign_keys = ON"))
-        conn.commit()
-    
-    engine.dispose()
-    print("Session cleanup complete")
 
 @pytest.fixture(scope="session")
 def userauth():
